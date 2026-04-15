@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Play — TyperTester</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --fs: clamp(13px,1.55vw,21px); --timer: clamp(52px,6.5vw,92px); --stat: clamp(16px,2vw,26px); }
+    #play-app { font-family: var(--mono); }
+    .g-screen { display:none; flex-direction:column; align-items:center; justify-content:center; flex:1; padding:clamp(1.2rem,3vw,2.5rem) clamp(1.2rem,4vw,3.5rem); text-align:center; }
+    .g-screen.active { display:flex; }
+    .diff-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%; max-width:clamp(440px,62vw,700px); margin-bottom:clamp(1.2rem,2.5vw,2.2rem); }
+    .diff-card { padding:clamp(.7rem,1.4vw,1.3rem) clamp(.7rem,1.1vw,1rem); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; transition:all .18s; text-align:left; background:var(--bg2); }
+    .diff-card:hover { border-color:var(--border2); background:var(--bg3); }
+    .diff-card.selected { background:var(--bg3); }
+    .dlabel { font-size:clamp(11px,1.1vw,13px); font-weight:700; margin-bottom:3px; letter-spacing:2px; }
+    .ddesc { font-size:clamp(8px,.8vw,10px); color:var(--text3); line-height:1.5; }
+    .diff-card.easy .dlabel { color:var(--green); } .diff-card.easy.selected { border-color:var(--green); }
+    .diff-card.normal .dlabel { color:var(--blue); } .diff-card.normal.selected { border-color:var(--blue); }
+    .diff-card.hard .dlabel { color:var(--orange); } .diff-card.hard.selected { border-color:var(--orange); }
+    .diff-card.extreme .dlabel { color:var(--red); } .diff-card.extreme.selected { border-color:var(--red); }
+    .time-row { display:flex; gap:7px; justify-content:center; flex-wrap:wrap; margin-bottom:clamp(1.2rem,2.5vw,2.2rem); }
+    .t-btn { padding:8px clamp(12px,1.8vw,22px); border-radius:var(--radius); border:1.5px solid var(--border); background:var(--bg2); color:var(--text3); font-size:11px; font-family:var(--mono); cursor:pointer; transition:all .13s; letter-spacing:2px; }
+    .t-btn:hover { border-color:var(--border2); color:var(--text); }
+    .t-btn.active { border-color:var(--text); background:var(--text); color:var(--bg); font-weight:700; }
+    .pg-title { font-size:11px; font-weight:700; color:var(--text3); letter-spacing:6px; text-transform:uppercase; margin-bottom:5px; font-family:var(--mono); }
+    .pg-sub { font-size:10px; color:var(--text3); letter-spacing:4px; text-transform:uppercase; margin-bottom:clamp(1.2rem,2.5vw,2.2rem); font-family:var(--mono); }
+    .g-back { position:absolute; top:clamp(.8rem,1.8vw,1.2rem); left:clamp(.8rem,1.8vw,1.2rem); background:var(--bg2); border:1.5px solid var(--border); border-radius:var(--radius); color:var(--text2); font-size:10px; cursor:pointer; font-family:var(--mono); padding:6px 13px; letter-spacing:2px; transition:all .13s; }
+    .g-back:hover { border-color:var(--border2); color:var(--text); }
+    .g-finish { position:absolute; top:clamp(.8rem,1.8vw,1.2rem); right:clamp(.8rem,1.8vw,1.2rem); background:rgba(76,175,80,0.08); border:1.5px solid rgba(76,175,80,0.3); border-radius:var(--radius); color:var(--green); font-size:10px; cursor:pointer; font-family:var(--mono); padding:6px 14px; letter-spacing:2px; transition:all .13s; }
+    .g-finish:hover { background:rgba(76,175,80,0.15); border-color:var(--green); }
+    .game-header { width:100%; padding:clamp(.8rem,2vw,1.6rem) clamp(1rem,2.5vw,2.5rem) clamp(.6rem,1.2vw,.9rem); text-align:center; position:relative; flex-shrink:0; }
+    .timer-num { font-size:var(--timer); font-weight:700; line-height:1; letter-spacing:-3px; transition:color .7s ease; font-family:var(--mono); }
+    .timer-num.green { color:var(--green); } .timer-num.orange { color:var(--orange); } .timer-num.red { color:var(--red); }
+    @keyframes pu { 0%,100%{opacity:1}50%{opacity:.45} }
+    .timer-num.pulse { animation:pu .5s ease-in-out infinite; }
+    .timer-sub { font-size:9px; color:var(--text3); letter-spacing:5px; text-transform:uppercase; margin-top:1px; font-family:var(--mono); }
+    .mini-stats { display:flex; gap:clamp(1rem,2.5vw,2.2rem); justify-content:center; margin-top:clamp(.4rem,1vw,.9rem); }
+    .ms { text-align:center; }
+    .ms-v { font-size:var(--stat); font-weight:700; color:var(--text); transition:color .2s; font-family:var(--mono); }
+    .ms-l { font-size:9px; color:var(--text3); letter-spacing:3px; text-transform:uppercase; margin-top:1px; font-family:var(--mono); }
+    .prog-bar { width:100%; height:2px; background:var(--bg3); overflow:hidden; flex-shrink:0; }
+    .prog-fill { height:100%; transition:width .9s linear,background .7s ease; background:var(--green); }
+    .game-body { width:100%; max-width:clamp(560px,83vw,900px); padding:clamp(.7rem,1.8vw,1.4rem) clamp(1rem,2.5vw,2.5rem) clamp(.8rem,2vw,1.8rem); align-self:center; display:flex; flex-direction:column; flex:1; }
+    .passage-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
+    .p-title { font-size:9px; color:var(--text3); letter-spacing:3px; text-transform:uppercase; font-family:var(--mono); }
+    .d-pill { font-size:8px; padding:2px 8px; border-radius:10px; border:1px solid; letter-spacing:2px; font-family:var(--mono); }
+    .d-pill.easy { color:var(--green); border-color:rgba(76,175,80,.3); background:rgba(76,175,80,.06); }
+    .d-pill.normal { color:var(--blue); border-color:rgba(66,165,245,.3); background:rgba(66,165,245,.06); }
+    .d-pill.hard { color:var(--orange); border-color:rgba(255,152,0,.3); background:rgba(255,152,0,.06); }
+    .d-pill.extreme { color:var(--red); border-color:rgba(239,83,80,.3); background:rgba(239,83,80,.06); }
+    .word-area { height:clamp(110px,16vh,195px); overflow:hidden; position:relative; cursor:text; flex-shrink:0; }
+    .word-area::before { content:''; position:absolute; top:0; left:0; right:0; height:28px; background:linear-gradient(var(--bg),transparent); z-index:2; pointer-events:none; }
+    .word-area::after { content:''; position:absolute; bottom:0; left:0; right:0; height:44px; background:linear-gradient(transparent,var(--bg)); z-index:2; pointer-events:none; }
+    #wd { font-size:var(--fs); line-height:2.2; padding:3px 0; transition:transform .3s cubic-bezier(.4,0,.2,1); will-change:transform; font-family:var(--mono); }
+    .w { display:inline-block; margin-right:clamp(3px,.5vw,7px); border-radius:3px; transition:color .1s; }
+    .w.done { color:var(--green); } .w.wf { color:var(--red); } .w.cur { color:var(--text); } .w.pen { color:var(--text3); }
+    .ch { display:inline; }
+    .ch.ok { color:#c8e6c9; } .ch.bad { color:#ef9a9a; text-decoration:underline; text-decoration-color:#ef5350; text-underline-offset:3px; } .ch.dim { color:var(--text3); } .ch.ex { color:#ef9a9a; text-decoration:underline; text-decoration-color:#ef5350; }
+    .caret { display:inline-block; width:2px; height:.82em; background:var(--text); animation:bl .9s step-end infinite; vertical-align:text-bottom; margin:0 1px; }
+    @keyframes bl { 0%,100%{opacity:1}50%{opacity:0} }
+    #ti { width:100%; padding:clamp(10px,1.3vw,14px) 18px; background:var(--bg2); border:1.5px solid var(--border); border-radius:var(--radius); color:var(--text); font-size:clamp(13px,1.3vw,18px); font-family:var(--mono); outline:none; letter-spacing:3px; transition:border-color .2s,background .2s; text-align:center; margin-top:clamp(.7rem,1.4vw,1.1rem); }
+    #ti:focus { border-color:var(--border2); }
+    #ti.err { border-color:rgba(239,83,80,.35); background:rgba(239,83,80,.04); }
+    #ti::placeholder { color:var(--text3); font-size:11px; letter-spacing:2px; }
+    #ti:disabled { opacity:.2; }
+    .hint-txt { font-size:9px; color:var(--text3); letter-spacing:3px; text-transform:uppercase; margin-top:7px; text-align:center; font-family:var(--mono); }
+    /* result */
+    #result-screen { justify-content:flex-start; padding:clamp(1rem,2.5vw,2rem) clamp(1rem,3vw,2.5rem); overflow-y:auto; }
+    .hs-ann { font-size:11px; color:var(--accent); letter-spacing:3px; margin-bottom:.6rem; display:none; text-align:center; font-family:var(--mono); }
+    .res-top { display:flex; gap:clamp(.8rem,2vw,1.8rem); width:100%; max-width:960px; align-self:center; align-items:stretch; margin-bottom:clamp(.6rem,1.5vw,1.2rem); }
+    .res-left { flex-shrink:0; text-align:left; display:flex; flex-direction:column; justify-content:center; min-width:clamp(100px,13vw,150px); }
+    .rll { font-size:clamp(11px,1.2vw,14px); color:var(--text2); letter-spacing:2px; font-family:var(--mono); margin-bottom:1px; }
+    .rlb { font-size:clamp(44px,6vw,76px); font-weight:700; color:var(--accent); line-height:1; font-family:var(--mono); }
+    .res-chart-box { flex:1; background:var(--bg2); border:1.5px solid var(--border); border-radius:var(--radius); padding:clamp(.6rem,1.2vw,1rem); min-height:clamp(130px,18vh,200px); position:relative; }
+    .chart-legend { display:flex; gap:1rem; position:absolute; top:8px; right:10px; }
+    .cl-item { display:flex; align-items:center; gap:5px; font-size:9px; color:var(--text3); letter-spacing:1px; font-family:var(--mono); }
+    .cl-line { width:18px; height:2px; border-radius:1px; }
+    #res-chart { width:100%; height:100%; display:block; }
+    .res-stats-row { display:flex; width:100%; max-width:960px; align-self:center; background:var(--bg2); border:1.5px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:clamp(.6rem,1.5vw,1.1rem); }
+    .rs2 { flex:1; padding:clamp(.6rem,1.2vw,1rem) clamp(.5rem,.8vw,.8rem); border-right:1px solid var(--border); text-align:left; }
+    .rs2:last-child { border-right:none; }
+    .rs2-l { font-size:9px; color:var(--text3); letter-spacing:3px; text-transform:uppercase; margin-bottom:4px; font-family:var(--mono); }
+    .rs2-v { font-size:clamp(13px,1.5vw,18px); font-weight:700; color:var(--accent); font-family:var(--mono); }
+    /* comparison bars */
+    .cmp-box { background:var(--bg2); border:1.5px solid var(--border); border-radius:var(--radius); padding:1.2rem 1.4rem; width:100%; max-width:960px; align-self:center; margin-bottom:clamp(.6rem,1.5vw,1rem); }
+    .cmp-title { font-family:var(--mono); font-size:9px; color:var(--text3); letter-spacing:4px; text-transform:uppercase; margin-bottom:1rem; }
+    .cmp-row { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+    .cmp-lbl { font-family:var(--mono); font-size:11px; color:var(--text2); width:140px; flex-shrink:0; }
+    .cmp-track { flex:1; height:7px; background:var(--bg3); border-radius:4px; overflow:hidden; }
+    .cmp-fill { height:100%; border-radius:4px; transition:width 1.2s cubic-bezier(.4,0,.2,1); width:0; }
+    .cmp-fill.you { background:var(--accent); }
+    .cmp-fill.avg { background:var(--text3); }
+    .cmp-fill.office { background:var(--blue); }
+    .cmp-fill.world { background:var(--red); }
+    .cmp-val { font-family:var(--mono); font-size:11px; color:var(--text2); width:58px; text-align:right; }
+    .cmp-summary { font-family:var(--mono); font-size:11px; color:var(--text2); line-height:1.7; margin-top:.8rem; padding-top:.8rem; border-top:1px solid var(--border); }
+    .tier-badge { display:inline-block; padding:3px 12px; border-radius:20px; font-family:var(--mono); font-size:9px; letter-spacing:2px; text-transform:uppercase; margin-top:.4rem; }
+    .res-actions { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; width:100%; max-width:960px; align-self:center; margin-top:.5rem; }
+    .res-meta { font-size:10px; color:var(--text3); letter-spacing:3px; text-transform:uppercase; text-align:center; margin-top:1rem; font-family:var(--mono); }
+    /* records */
+    #records-screen { justify-content:flex-start; padding-top:1.5rem; overflow-y:auto; }
+    #rec-wrap { width:100%; max-width:clamp(480px,72vw,800px); }
+    /* home */
+    .g-start-btn { font-family:var(--mono); font-size:13px; letter-spacing:2px; padding:14px 36px; border-radius:var(--radius); background:var(--accent); color:#111; font-weight:700; border:none; cursor:pointer; text-transform:uppercase; transition:all var(--transition); margin-top:.5rem; }
+    .g-start-btn:hover { background:var(--accent2); transform:translateY(-2px); }
+    .g-start-btn:disabled { opacity:.25; pointer-events:none; }
+    @media(max-width:640px) { .diff-grid { grid-template-columns:1fr 1fr; } .res-top { flex-direction:column; } .res-stats-row { flex-wrap:wrap; } .rs2 { min-width:50%; } }
+  </style>
+  <script src="js/main.js"></script>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span class="bracket">[</span><span class="t1">Typer</span><span class="t2">Tester</span><span class="logo-cursor"></span><span class="bracket">]</span></a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="play.html" class="active">Play</a></li>
+    <li><a href="learn.html">Learn</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" title="Toggle theme" aria-label="Toggle theme"></button>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div id="play-app">
+
+  <!-- HOME -->
+  <div id="home-screen" class="g-screen active">
+    <div style="font-family:var(--mono);font-size:clamp(28px,3.8vw,46px);font-weight:700;margin-bottom:.5rem">
+      <span style="color:var(--text3)">[</span><span style="color:var(--text)">Typer</span><span style="color:var(--text2)">Tester</span><span class="logo-cursor"></span><span style="color:var(--text3)">]</span>
+    </div>
+    <div style="font-family:var(--mono);font-size:clamp(8px,.9vw,11px);color:var(--text3);letter-spacing:6px;text-transform:uppercase;margin-bottom:clamp(1.5rem,3.5vw,3.2rem)">stories · speed · skill</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+      <button onclick="sfx('btn');showScreen('options-screen')" class="g-start-btn" style="opacity:1;pointer-events:auto">▶ PLAY</button>
+      <button onclick="sfx('btn');showScreen('records-screen')" style="font-family:var(--mono);font-size:13px;letter-spacing:2px;padding:13px 34px;border-radius:var(--radius);background:transparent;color:var(--text2);font-weight:500;border:1.5px solid var(--border);cursor:pointer;transition:all var(--transition)" onmouseover="this.style.borderColor='var(--border2)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">⊞ RECORDS</button>
+    </div>
+  </div>
+
+  <!-- OPTIONS -->
+  <div id="options-screen" class="g-screen">
+    <button class="g-back" onclick="sfx('btn');showScreen('home-screen')">← BACK</button>
+    <div class="pg-title">SELECT DIFFICULTY</div>
+    <div class="pg-sub">vocabulary matches the level</div>
+    <div class="diff-grid">
+      <div class="diff-card easy" data-diff="easy" onclick="sfx('btn');selectDiff('easy')"><div class="dlabel">Easy</div><div class="ddesc">Primary school. Short words & simple sentences.</div></div>
+      <div class="diff-card normal" data-diff="normal" onclick="sfx('btn');selectDiff('normal')"><div class="dlabel">Normal</div><div class="ddesc">High school freshman. Everyday vocabulary.</div></div>
+      <div class="diff-card hard" data-diff="hard" onclick="sfx('btn');selectDiff('hard')"><div class="dlabel">Hard</div><div class="ddesc">College level. Academic & complex prose.</div></div>
+      <div class="diff-card extreme" data-diff="extreme" onclick="sfx('btn');selectDiff('extreme')"><div class="dlabel">Extreme</div><div class="ddesc">Professional. Dense technical writing.</div></div>
+    </div>
+    <div class="pg-title" style="margin-bottom:.8rem">TIME LIMIT</div>
+    <div class="time-row">
+      <button class="t-btn dur-btn active" data-dur="15" onclick="sfx('btn');selDur(15)">15s</button>
+      <button class="t-btn dur-btn" data-dur="30" onclick="sfx('btn');selDur(30)">30s</button>
+      <button class="t-btn dur-btn" data-dur="60" onclick="sfx('btn');selDur(60)">1 min</button>
+      <button class="t-btn dur-btn" data-dur="120" onclick="sfx('btn');selDur(120)">2 min</button>
+      <button class="t-btn dur-btn" data-dur="180" onclick="sfx('btn');selDur(180)">3 min</button>
+      <button class="t-btn dur-btn" data-dur="300" onclick="sfx('btn');selDur(300)">5 min</button>
+    </div>
+    <button class="g-start-btn" onclick="sfx('btn');startGame()" id="start-btn" disabled>START →</button>
+  </div>
+
+  <!-- GAME -->
+  <div id="game-screen" class="g-screen" style="justify-content:flex-start;padding:0">
+    <div class="game-header">
+      <button class="g-back" onclick="sfx('btn');endGame(true)">← QUIT</button>
+      <button class="g-finish" onclick="sfx('btn');endGame(false)">■ FINISH</button>
+      <div class="timer-num green" id="g-timer">30</div>
+      <div class="timer-sub">seconds remaining</div>
+      <div class="mini-stats">
+        <div class="ms"><div class="ms-v" id="g-wpm">—</div><div class="ms-l">wpm</div></div>
+        <div class="ms"><div class="ms-v" id="g-words">0</div><div class="ms-l">words</div></div>
+        <div class="ms"><div class="ms-v" id="g-acc">—</div><div class="ms-l">accuracy</div></div>
+        <div class="ms"><div class="ms-v" id="g-err" style="color:var(--text3)">0</div><div class="ms-l">errors</div></div>
+      </div>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:100%"></div></div>
+    <div class="game-body">
+      <div class="passage-meta">
+        <span class="p-title" id="p-title">passage</span>
+        <span class="d-pill easy" id="d-pill">EASY</span>
+      </div>
+      <div class="word-area" id="word-area"><div id="wd"></div></div>
+      <input id="ti" type="text" placeholder="begin typing here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      <div class="hint-txt">space to confirm · backspace on empty restores previous word</div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result-screen" class="g-screen">
+    <div class="hs-ann" id="hs-ann">★ NEW HIGH SCORE ★</div>
+    <div class="res-top">
+      <div class="res-left">
+        <div class="rll">wpm</div>
+        <div class="rlb" id="res-wpm">0</div>
+        <div class="rll" style="margin-top:.7rem">acc</div>
+        <div class="rlb" id="res-acc">—</div>
+        <span class="tier-badge" id="res-tier">—</span>
+      </div>
+      <div class="res-chart-box">
+        <div class="chart-legend">
+          <div class="cl-item"><div class="cl-line" style="background:var(--accent)"></div>wpm</div>
+          <div class="cl-item"><div class="cl-line" style="background:var(--text3)"></div>raw</div>
+          <div class="cl-item" style="color:var(--red)">✕ error</div>
+        </div>
+        <canvas id="res-chart"></canvas>
+      </div>
+    </div>
+    <div class="res-stats-row">
+      <div class="rs2"><div class="rs2-l">raw wpm</div><div class="rs2-v" id="res-raw">0</div></div>
+      <div class="rs2"><div class="rs2-l">chars</div><div class="rs2-v" id="res-chars">0/0</div></div>
+      <div class="rs2"><div class="rs2-l">consistency</div><div class="rs2-v" id="res-cons">0%</div></div>
+      <div class="rs2"><div class="rs2-l">errors</div><div class="rs2-v" id="res-errs" style="color:var(--red)">0</div></div>
+      <div class="rs2"><div class="rs2-l">time</div><div class="rs2-v" id="res-time">0s</div></div>
+    </div>
+
+    <!-- Global comparison -->
+    <div class="cmp-box">
+      <div class="cmp-title">How you compare globally</div>
+      <div class="cmp-row"><div class="cmp-lbl">You</div><div class="cmp-track"><div class="cmp-fill you" id="bar-you"></div></div><div class="cmp-val" id="bar-you-lbl">—</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Global average</div><div class="cmp-track"><div class="cmp-fill avg" id="bar-avg"></div></div><div class="cmp-val" id="bar-avg-lbl">~40 wpm</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Office professional</div><div class="cmp-track"><div class="cmp-fill office" id="bar-office"></div></div><div class="cmp-val" id="bar-office-lbl">~65 wpm</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Pro typist</div><div class="cmp-track"><div class="cmp-fill avg" id="bar-pro" style="background:var(--green)"></div></div><div class="cmp-val" id="bar-pro-lbl">~100 wpm</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">World record</div><div class="cmp-track"><div class="cmp-fill world" id="bar-world"></div></div><div class="cmp-val" id="bar-world-lbl">212 wpm</div></div>
+      <div class="cmp-summary" id="res-compare-summary"></div>
+    </div>
+
+    <div class="res-actions">
+      <button onclick="sfx('btn');startGame()" class="g-start-btn" style="margin-top:0">TRY AGAIN</button>
+      <button onclick="sfx('btn');showScreen('options-screen')" style="font-family:var(--mono);font-size:12px;letter-spacing:2px;padding:12px 22px;border-radius:var(--radius);background:transparent;color:var(--text2);border:1.5px solid var(--border);cursor:pointer;transition:all var(--transition)">SETTINGS</button>
+      <button onclick="sfx('btn');showScreen('records-screen')" style="font-family:var(--mono);font-size:12px;letter-spacing:2px;padding:12px 22px;border-radius:var(--radius);background:transparent;color:var(--text2);border:1.5px solid var(--border);cursor:pointer;transition:all var(--transition)">RECORDS</button>
+      <a href="index.html" style="font-family:var(--mono);font-size:12px;letter-spacing:2px;padding:12px 22px;border-radius:var(--radius);background:transparent;color:var(--text2);border:1.5px solid var(--border);cursor:pointer;transition:all var(--transition);text-decoration:none;display:inline-flex;align-items:center">HOME</a>
+    </div>
+    <div class="res-meta" id="res-meta"></div>
+  </div>
+
+  <!-- RECORDS -->
+  <div id="records-screen" class="g-screen">
+    <button class="g-back" onclick="sfx('btn');showScreen('home-screen')">← BACK</button>
+    <div class="pg-title" style="margin-bottom:4px">RECORDS</div>
+    <div class="pg-sub">your best performances</div>
+    <div id="rec-wrap"></div>
+  </div>
+
+</div>
+
+<script src="js/game.js"></script>
+</body>
+</html>
