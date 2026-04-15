@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Progress & Achievements — TyperTester</title>
+  <meta name="description" content="Track your typing speed progress over time and unlock achievement badges."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="js/main.js"></script>
+  <script src="js/features.js"></script>
+  <style>
+    .prog-hero{padding-top:calc(var(--nav-h) + clamp(2rem,4vw,3.5rem));padding-bottom:clamp(2rem,4vw,3rem);text-align:center;padding-left:clamp(1rem,5vw,4rem);padding-right:clamp(1rem,5vw,4rem)}
+    .prog-hero h1{font-size:clamp(28px,4.5vw,52px);font-weight:800;letter-spacing:-1.5px;margin-bottom:.8rem}
+    .prog-hero p{font-family:var(--mono);font-size:clamp(12px,1.2vw,14px);color:var(--text2);line-height:1.7}
+    .prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,2vw,1.8rem);max-width:1100px;margin:0 auto;padding:0 clamp(1rem,4vw,3rem) clamp(3rem,6vw,5rem)}
+    @media(max-width:700px){.prog-grid{grid-template-columns:1fr}}
+    .prog-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.2rem,2.5vw,2rem);transition:border-color var(--transition),background var(--transition)}
+    .prog-card.full{grid-column:1/-1}
+    .card-head{font-size:10px;color:var(--text3);letter-spacing:5px;text-transform:uppercase;margin-bottom:1.2rem;font-family:var(--mono);display:flex;align-items:center;justify-content:space-between}
+    .card-head .badge-count{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:1px}
+    canvas.chart-canvas{display:block;width:100%;height:200px}
+    /* Badge grid */
+    .badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(140px,100%),1fr));gap:10px}
+    .badge-card{padding:1rem .9rem;border-radius:var(--radius);border:1.5px solid var(--border);text-align:center;background:var(--bg3);opacity:.4;transition:all .2s}
+    .badge-card.unlocked{opacity:1;border-color:var(--border2);background:var(--bg2)}
+    .badge-icon{font-size:24px;margin-bottom:.4rem}
+    .badge-name{font-size:12px;font-weight:700;margin-bottom:.25rem;color:var(--text)}
+    .badge-desc{font-size:10px;color:var(--text2);font-family:var(--mono);line-height:1.5}
+    .badge-card.unlocked .badge-name{color:var(--accent)}
+    /* Stats summary */
+    .stat-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(120px,100%),1fr));gap:10px;margin-bottom:1.5rem}
+    .ss-item{text-align:center;padding:.8rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)}
+    .ss-val{font-family:var(--mono);font-size:clamp(18px,2.5vw,26px);font-weight:700;color:var(--accent)}
+    .ss-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin-top:3px}
+    /* Heatmap */
+    .heatmap-wrap{overflow-x:auto}
+    /* Recent history table */
+    .hist-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
+    .hist-table th{padding:8px 10px;text-align:left;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border)}
+    .hist-table td{padding:10px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
+    .hist-table tr:hover td{background:var(--bg3)}
+    .diff-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><span class="bracket">[</span><span class="t1">Typer</span><span class="t2">Tester</span><span class="logo-cursor"></span><span class="bracket">]</span></a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html">Home</a></li><li><a href="play.html">Play</a></li>
+    <li><a href="progress.html" class="active">Progress</a></li>
+    <li><a href="learn.html">Learn</a></li><li><a href="about.html">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" aria-label="Toggle theme"></button>
+    <a href="play.html" class="play-nav-btn">▶ Play</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="prog-hero">
+  <div class="section-tag">Your Journey</div>
+  <h1>Progress &<br><span class="accent">Achievements</span></h1>
+  <p>Track how your typing speed has improved over time and see which badges you've unlocked.</p>
+</div>
+<hr class="divider"/>
+
+<div class="prog-grid" id="prog-grid">
+
+  <!-- Stats Summary -->
+  <div class="prog-card full" id="summary-card">
+    <div class="card-head">Your Stats</div>
+    <div class="stat-summary" id="stat-summary"></div>
+    <div id="no-data-msg" style="display:none;font-family:var(--mono);font-size:13px;color:var(--text3);text-align:center;padding:2rem 0">
+      No data yet! <a href="play.html" style="color:var(--accent)">Play a test</a> to start tracking your progress.
+    </div>
+  </div>
+
+  <!-- Progress Chart -->
+  <div class="prog-card full">
+    <div class="card-head">WPM Over Time <span style="font-family:var(--mono);font-size:9px;color:var(--text3)">last 30 sessions</span></div>
+    <canvas class="chart-canvas" id="prog-chart" style="height:220px"></canvas>
+  </div>
+
+  <!-- Keyboard Heatmap -->
+  <div class="prog-card full">
+    <div class="card-head">Error Heatmap <span style="font-family:var(--mono);font-size:9px;color:var(--text3)">cumulative mistyped keys</span></div>
+    <div class="heatmap-wrap"><canvas id="heatmap-canvas"></canvas></div>
+    <div id="heatmap-empty" style="display:none;font-family:var(--mono);font-size:12px;color:var(--text3);text-align:center;padding:2rem">Complete a few tests to see which keys you mistype most.</div>
+  </div>
+
+  <!-- Achievements -->
+  <div class="prog-card full">
+    <div class="card-head">Achievements <span class="badge-count" id="badge-count">0 / 16</span></div>
+    <div class="badge-grid" id="badge-grid"></div>
+  </div>
+
+  <!-- Recent History -->
+  <div class="prog-card full">
+    <div class="card-head">Recent Sessions <span style="font-family:var(--mono);font-size:9px;color:var(--text3);cursor:pointer;color:var(--red)" onclick="clearAll()">Clear all</span></div>
+    <div style="overflow-x:auto">
+      <table class="hist-table">
+        <thead><tr><th>#</th><th>WPM</th><th>Accuracy</th><th>Words</th><th>Difficulty</th><th>Time</th><th>Date</th></tr></thead>
+        <tbody id="hist-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand"><div class="brand-name" style="font-family:var(--mono)">[TyperTester]</div><div class="brand-sub">Free · No ads · No account</div></div>
+  <div class="footer-links">
+    <div class="footer-col"><h5>Test</h5><a href="play.html">Play Now</a></div>
+    <div class="footer-col"><h5>Track</h5><a href="progress.html">Progress</a></div>
+    <div class="footer-col"><h5>Learn</h5><a href="learn.html">Improve WPM</a></div>
+    <div class="footer-col"><h5>Site</h5><a href="about.html">About</a><a href="faq.html">FAQ</a></div>
+  </div>
+</footer>
+<div class="footer-bottom"><p>© 2025 TyperTester.</p><p>Free forever.</p></div>
+
+<script>
+function fT(s){return s>=60?`${Math.floor(s/60)}m${s%60?` ${s%60}s`:''}`:`${s}s`}
+const diffColor = d => d==='easy'?'#4caf50':d==='normal'?'#42a5f5':d==='hard'?'#ff9800':'#ef5350';
+
+function init() {
+  let records = [];
+  try { records = JSON.parse(localStorage.getItem('tt_v7') || localStorage.getItem('tt_v8') || '[]'); } catch(e){}
+
+  const unlocked = TTFeatures.getUnlocked();
+  document.getElementById('badge-count').textContent = `${unlocked.length} / ${TTFeatures.ACHIEVEMENT_DEFS.length}`;
+  TTFeatures.renderAchievements('badge-grid');
+
+  if (!records.length) {
+    document.getElementById('no-data-msg').style.display = 'block';
+    document.getElementById('heatmap-empty').style.display = 'block';
+    document.getElementById('hist-body').innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:1.5rem">No sessions yet</td></tr>';
+    return;
+  }
+
+  // Summary stats
+  const best = Math.max(...records.map(r=>r.w));
+  const avg = Math.round(records.map(r=>r.w).reduce((a,b)=>a+b,0)/records.length);
+  const bestAcc = Math.max(...records.map(r=>r.a));
+  const totalWords = records.reduce((a,r)=>a+(r.c||0),0);
+  document.getElementById('stat-summary').innerHTML = `
+    <div class="ss-item"><div class="ss-val">${best}</div><div class="ss-lbl">Best WPM</div></div>
+    <div class="ss-item"><div class="ss-val">${avg}</div><div class="ss-lbl">Avg WPM</div></div>
+    <div class="ss-item"><div class="ss-val">${bestAcc}%</div><div class="ss-lbl">Best Acc</div></div>
+    <div class="ss-item"><div class="ss-val">${records.length}</div><div class="ss-lbl">Tests Taken</div></div>
+    <div class="ss-item"><div class="ss-val">${totalWords.toLocaleString()}</div><div class="ss-lbl">Words Typed</div></div>
+    <div class="ss-item"><div class="ss-val">${unlocked.length}</div><div class="ss-lbl">Badges</div></div>
+  `;
+
+  // Progress chart
+  setTimeout(() => TTFeatures.drawProgressChart('prog-chart', records), 100);
+
+  // Heatmap — use saved mistyped data or show message
+  let heatData = {};
+  try { heatData = JSON.parse(localStorage.getItem('tt_mistyped') || '{}'); } catch(e){}
+  if (Object.keys(heatData).length > 0) {
+    setTimeout(() => TTFeatures.drawHeatmap('heatmap-canvas', heatData), 150);
+  } else {
+    document.getElementById('heatmap-empty').style.display = 'block';
+    document.getElementById('heatmap-canvas').style.display = 'none';
+  }
+
+  // History table
+  const tbody = document.getElementById('hist-body');
+  tbody.innerHTML = records.slice(0, 20).map((r, i) => `
+    <tr>
+      <td style="color:var(--text3)">${i+1}</td>
+      <td style="font-weight:700;color:var(--accent)">${r.w}</td>
+      <td style="color:${r.a>=95?'var(--green)':r.a>=85?'var(--blue)':'var(--text2)'}">${r.a}%</td>
+      <td>${r.c||'—'}</td>
+      <td><span class="diff-dot" style="background:${diffColor(r.d)}"></span>${r.d}</td>
+      <td>${fT(r.dur)}</td>
+      <td style="color:var(--text3)">${r.dt||'—'}</td>
+    </tr>`).join('');
+}
+
+function clearAll() {
+  if (!confirm('Clear all records and progress data?')) return;
+  localStorage.removeItem('tt_v7'); localStorage.removeItem('tt_v8');
+  localStorage.removeItem('tt_mistyped'); localStorage.removeItem('tt_achievements');
+  location.reload();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+window.addEventListener('resize', () => {
+  let records=[]; try{records=JSON.parse(localStorage.getItem('tt_v7')||localStorage.getItem('tt_v8')||'[]')}catch(e){}
+  if(records.length) TTFeatures.drawProgressChart('prog-chart', records);
+  let heatData={};try{heatData=JSON.parse(localStorage.getItem('tt_mistyped')||'{}')}catch(e){}
+  if(Object.keys(heatData).length) TTFeatures.drawHeatmap('heatmap-canvas', heatData);
+});
+</script>
+</body>
+</html>
