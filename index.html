@@ -1,270 +1,98 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TyperTester — Test & Improve Your Typing Speed</title>
-  <meta name="description" content="TyperTester is a free, beautiful typing speed test. Practice with real passages, track your WPM, and become a faster typist." />
-  <link rel="stylesheet" href="css/style.css" />
-  <script src="js/main.js" defer></script>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>TyperTester — Free Typing Speed Test</title>
+<meta name="description" content="Test and improve your typing speed with real passages. Track WPM, unlock badges, and see how you compare globally. Free, no account needed."/>
+<link rel="stylesheet" href="css/style.css"/>
+<script src="js/main.js"></script>
 </head>
 <body>
-
-<!-- NAV -->
 <nav>
-  <a href="index.html" class="nav-logo">
-    <span class="bracket">[</span><span class="t1">Typer</span><span class="t2">Tester</span><span class="logo-cursor"></span><span class="bracket">]</span>
-  </a>
+  <a href="index.html" class="nav-logo"><span class="bracket">[</span><span class="t1">Typer</span><span class="t2">Tester</span><span class="logo-cursor"></span><span class="bracket">]</span></a>
   <ul class="nav-links" id="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="play.html">Play</a></li>
-    <li><a href="progress.html">Progress</a></li>
-    <li><a href="learn.html">Learn</a></li>
-    <li><a href="about.html">About</a></li>
+    <li><a href="index.html">Home</a></li><li><a href="play.html">Play</a></li>
+    <li><a href="progress.html">Progress</a></li><li><a href="learn.html">Learn</a></li>
+    <li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li>
   </ul>
   <div class="nav-right">
-    <button class="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle theme"></button>
+    <button class="theme-toggle" aria-label="Toggle theme"></button>
     <a href="play.html" class="play-nav-btn">▶ Play</a>
     <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
-  <div class="hero-eyebrow fade-in">Free Typing Speed Test</div>
-  <h1 class="fade-in-2">
-    How Fast Can<br>You <span class="highlight">Really</span> Type?
-  </h1>
-  <p class="hero-sub fade-in-3">
-    Test your WPM with real stories and interesting passages. Track your progress, beat your records, and train smarter — not harder.
-  </p>
-  <div class="hero-btns fade-in-4">
+  <div class="hero-eyebrow">Free Typing Speed Test</div>
+  <h1>How Fast Can<br>You <span class="highlight">Really</span> Type?</h1>
+  <p class="hero-sub">Test your WPM with real stories and interesting passages. Track your progress, unlock achievements, and train smarter.</p>
+  <div class="hero-btns">
     <a href="play.html" class="btn-primary">▶ Start Typing</a>
     <a href="learn.html" class="btn-secondary">Learn to Type Faster</a>
   </div>
-  <div class="hero-stats fade-in-4">
-    <div class="hero-stat">
-      <div class="num">40</div>
-      <div class="label">Avg Global WPM</div>
-    </div>
-    <div class="hero-stat">
-      <div class="num">100+</div>
-      <div class="label">WPM is Professional</div>
-    </div>
-    <div class="hero-stat">
-      <div class="num">4</div>
-      <div class="label">Difficulty Levels</div>
-    </div>
-    <div class="hero-stat">
-      <div class="num">∞</div>
-      <div class="label">Passages to Type</div>
-    </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">40</div><div class="label">Avg Global WPM</div></div>
+    <div class="hero-stat"><div class="num">100+</div><div class="label">WPM is Professional</div></div>
+    <div class="hero-stat"><div class="num">4</div><div class="label">Difficulty Levels</div></div>
+    <div class="hero-stat"><div class="num">17</div><div class="label">Achievements to Unlock</div></div>
   </div>
 </section>
+<hr class="divider"/>
 
-<hr class="divider" />
-
-<!-- FEATURES -->
 <div class="section">
   <div class="section-tag">Features</div>
   <h2 class="section-title">Built for serious typists.</h2>
-  <p class="section-sub">Everything you need to improve, nothing you don't. Clean, fast, and focused on what matters.</p>
+  <p class="section-sub">Everything you need to improve, nothing you don't.</p>
   <div class="feature-grid">
-    <div class="feature-card">
-      <div class="feature-icon">📖</div>
-      <div class="feature-title">Real Passages</div>
-      <div class="feature-desc">Type actual stories, science, history and philosophy — not random words. Build muscle memory with meaningful content.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📊</div>
-      <div class="feature-title">Live WPM Graph</div>
-      <div class="feature-desc">See your speed over time after every test. Identify slowdowns, spot errors, and watch your consistency grow.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🎯</div>
-      <div class="feature-title">4 Difficulty Levels</div>
-      <div class="feature-desc">From primary school to professional writing. Progress through levels as your typing improves.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">⌨️</div>
-      <div class="feature-title">Satisfying Sound Design</div>
-      <div class="feature-desc">Soft mechanical key sounds and audio feedback make typing feel rewarding. Mute anytime if you prefer silence.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📈</div>
-      <div class="feature-title">Personal Records</div>
-      <div class="feature-desc">Your top 5 scores and recent 3 games are always saved. Challenge yourself to beat your own best.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🌙</div>
-      <div class="feature-title">Light & Dark Mode</div>
-      <div class="feature-desc">Easy on the eyes whether you're typing at midnight or in bright daylight. Toggle anytime with one click.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔄</div>
-      <div class="feature-title">Backspace & Correct</div>
-      <div class="feature-desc">Made a typo? Backspace restores your previous attempt so you can fix it without losing your flow.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
-      <div class="feature-title">Flexible Time Limits</div>
-      <div class="feature-desc">Choose from 15 seconds to 5 minutes. Sprint or endurance — you decide the challenge.</div>
-    </div>
+    <div class="feature-card"><div class="feature-icon">📖</div><div class="feature-title">Real Passages</div><div class="feature-desc">Type actual stories, science, history and philosophy — not random words. Build muscle memory with meaningful content.</div></div>
+    <div class="feature-card"><div class="feature-icon">📊</div><div class="feature-title">Live WPM Graph</div><div class="feature-desc">See your speed over time after every test. Identify slowdowns, spot errors, and watch your consistency improve.</div></div>
+    <div class="feature-card"><div class="feature-icon">🗺️</div><div class="feature-title">Error Heatmap</div><div class="feature-desc">A keyboard heatmap shows which keys you mistype most. Target your weak spots and fix them deliberately.</div></div>
+    <div class="feature-card"><div class="feature-icon">🏆</div><div class="feature-title">Achievement Badges</div><div class="feature-desc">Unlock 17 badges as you improve — from First 60 WPM to Consistency King to Elite Typist.</div></div>
+    <div class="feature-card"><div class="feature-icon">🌍</div><div class="feature-title">3 Languages</div><div class="feature-desc">Type in English, Filipino, or Spanish. Each language has passages across all four difficulty levels.</div></div>
+    <div class="feature-card"><div class="feature-icon">✍️</div><div class="feature-title">Custom Text</div><div class="feature-desc">Paste your own text — study notes, code, scripts — and practice with content that matters to you.</div></div>
+    <div class="feature-card"><div class="feature-icon">🖐️</div><div class="feature-title">Hand Guide</div><div class="feature-desc">Interactive keyboard shows which finger types each key. Learn proper touch typing technique step by step.</div></div>
+    <div class="feature-card"><div class="feature-icon">🌙</div><div class="feature-title">Light &amp; Dark Mode</div><div class="feature-desc">Toggle between themes anytime. Easy on the eyes whether you type at midnight or in bright daylight.</div></div>
   </div>
 </div>
+<hr class="divider"/>
 
-<hr class="divider" />
-
-<!-- HOW IT WORKS -->
-<div class="section" style="max-width:860px">
-  <div class="section-tag">How It Works</div>
-  <h2 class="section-title">Simple. Fast. Effective.</h2>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:2rem;margin-top:2.5rem">
-    <div style="text-align:center">
-      <div style="font-family:var(--mono);font-size:36px;font-weight:700;color:var(--accent);margin-bottom:.5rem">01</div>
-      <div style="font-size:15px;font-weight:700;margin-bottom:.5rem">Pick your level</div>
-      <div class="prose" style="font-size:12px">Choose Easy, Normal, Hard, or Extreme — each uses vocabulary matching that difficulty level.</div>
-    </div>
-    <div style="text-align:center">
-      <div style="font-family:var(--mono);font-size:36px;font-weight:700;color:var(--accent);margin-bottom:.5rem">02</div>
-      <div style="font-size:15px;font-weight:700;margin-bottom:.5rem">Type the passage</div>
-      <div class="prose" style="font-size:12px">Words highlight as you type. Errors show in red. Backspace to fix. The paragraph scrolls automatically.</div>
-    </div>
-    <div style="text-align:center">
-      <div style="font-family:var(--mono);font-size:36px;font-weight:700;color:var(--accent);margin-bottom:.5rem">03</div>
-      <div style="font-size:15px;font-weight:700;margin-bottom:.5rem">See your results</div>
-      <div class="prose" style="font-size:12px">Get WPM, accuracy, a speed graph, and a comparison to global averages so you know exactly where you stand.</div>
-    </div>
-    <div style="text-align:center">
-      <div style="font-family:var(--mono);font-size:36px;font-weight:700;color:var(--accent);margin-bottom:.5rem">04</div>
-      <div style="font-size:15px;font-weight:700;margin-bottom:.5rem">Beat your record</div>
-      <div class="prose" style="font-size:12px">Your top 5 scores are always saved. Keep testing and training until you reach the next tier.</div>
-    </div>
-  </div>
-</div>
-
-<hr class="divider" />
-
-<!-- COMPARISON -->
 <div class="section">
   <div class="section-tag">Why TyperTester</div>
   <h2 class="section-title">How we compare.</h2>
-  <p class="section-sub">We built TyperTester to fix what we disliked about other typing tests. No ads, no distractions, no fluff.</p>
   <div class="compare-wrap">
     <table class="compare-table">
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th class="us">TyperTester</th>
-          <th>MonkeyType</th>
-          <th>10FastFingers</th>
-          <th>TypeRacer</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Feature</th><th class="us">TyperTester</th><th>MonkeyType</th><th>10FastFingers</th><th>TypeRacer</th></tr></thead>
       <tbody>
-        <tr class="us-row">
-          <td class="us">Real story passages</td>
-          <td class="us check">✓ Yes</td>
-          <td class="meh">△ Optional</td>
-          <td class="cross">✗ No</td>
-          <td class="check">✓ Yes</td>
-        </tr>
-        <tr>
-          <td>No ads</td>
-          <td class="us check">✓ Always</td>
-          <td class="check">✓ Yes</td>
-          <td class="cross">✗ Has ads</td>
-          <td class="cross">✗ Has ads</td>
-        </tr>
-        <tr class="us-row">
-          <td class="us">Live speed graph</td>
-          <td class="us check">✓ Yes</td>
-          <td class="check">✓ Yes</td>
-          <td class="cross">✗ No</td>
-          <td class="cross">✗ No</td>
-        </tr>
-        <tr>
-          <td>Sound feedback</td>
-          <td class="us check">✓ Satisfying clicks</td>
-          <td class="check">✓ Yes</td>
-          <td class="cross">✗ No</td>
-          <td class="cross">✗ No</td>
-        </tr>
-        <tr class="us-row">
-          <td class="us">Difficulty levels</td>
-          <td class="us check">✓ 4 levels</td>
-          <td class="meh">△ Word lists</td>
-          <td class="meh">△ Word lists</td>
-          <td class="cross">✗ No</td>
-        </tr>
-        <tr>
-          <td>Light / dark mode</td>
-          <td class="us check">✓ Yes</td>
-          <td class="check">✓ Yes</td>
-          <td class="cross">✗ Dark only</td>
-          <td class="cross">✗ Light only</td>
-        </tr>
-        <tr class="us-row">
-          <td class="us">Global WPM comparison</td>
-          <td class="us check">✓ On results</td>
-          <td class="cross">✗ No</td>
-          <td class="meh">△ Rankings</td>
-          <td class="meh">△ Rankings</td>
-        </tr>
-        <tr>
-          <td>No account required</td>
-          <td class="us check">✓ Play instantly</td>
-          <td class="check">✓ Yes</td>
-          <td class="meh">△ Optional</td>
-          <td class="cross">✗ Required</td>
-        </tr>
+        <tr class="us-row"><td class="us">Real story passages</td><td class="us check">✓ Yes</td><td class="meh">△ Optional</td><td class="cross">✗ No</td><td class="check">✓ Yes</td></tr>
+        <tr><td>No ads ever</td><td class="us check">✓ Always</td><td class="check">✓ Yes</td><td class="cross">✗ Has ads</td><td class="cross">✗ Has ads</td></tr>
+        <tr class="us-row"><td class="us">Hand / finger guide</td><td class="us check">✓ Yes</td><td class="cross">✗ No</td><td class="cross">✗ No</td><td class="cross">✗ No</td></tr>
+        <tr><td>Keyboard heatmap</td><td class="us check">✓ Yes</td><td class="check">✓ Yes</td><td class="cross">✗ No</td><td class="cross">✗ No</td></tr>
+        <tr class="us-row"><td class="us">Achievement badges</td><td class="us check">✓ 17 badges</td><td class="cross">✗ No</td><td class="cross">✗ No</td><td class="cross">✗ No</td></tr>
+        <tr><td>Multiple languages</td><td class="us check">✓ EN / FIL / ES</td><td class="meh">△ Word lists</td><td class="meh">△ Some</td><td class="meh">△ Some</td></tr>
+        <tr class="us-row"><td class="us">Global WPM comparison</td><td class="us check">✓ On results</td><td class="cross">✗ No</td><td class="meh">△ Rankings</td><td class="meh">△ Rankings</td></tr>
+        <tr><td>No account required</td><td class="us check">✓ Play instantly</td><td class="check">✓ Yes</td><td class="meh">△ Optional</td><td class="cross">✗ Required</td></tr>
       </tbody>
     </table>
   </div>
 </div>
+<hr class="divider"/>
 
-<hr class="divider" />
-
-<!-- CTA -->
 <div class="section" style="text-align:center;max-width:600px">
   <div class="section-tag">Ready?</div>
   <h2 class="section-title">Start typing in 3 seconds.</h2>
   <p class="section-sub" style="margin:0 auto 2rem">No account. No download. No setup. Just open, pick your level, and go.</p>
-  <a href="play.html" class="btn-primary" style="font-size:15px;padding:16px 48px">▶ Take the Test Now</a>
+  <a href="play.html" class="btn-primary" style="font-size:15px;padding:16px 44px">▶ Take the Test Now</a>
 </div>
 
-<!-- FOOTER -->
 <footer>
-  <div class="footer-brand">
-    <div class="brand-name" style="font-family:var(--mono)">[TyperTester]</div>
-    <div class="brand-sub">Free typing speed test · No ads · No account needed</div>
-  </div>
+  <div class="footer-brand"><div class="brand-name">[TyperTester]</div><div class="brand-sub">Free typing speed test · No ads · No account</div></div>
   <div class="footer-links">
-    <div class="footer-col">
-      <h5>Test</h5>
-      <a href="play.html">Play Now</a>
-      <a href="play.html?diff=easy">Easy Mode</a>
-      <a href="play.html?diff=extreme">Extreme Mode</a>
-    </div>
-    <div class="footer-col">
-      <h5>Learn</h5>
-      <a href="learn.html">Improve WPM</a>
-      <a href="learn.html#what-is-wpm">What is WPM?</a>
-      <a href="learn.html#tips">Typing Tips</a>
-    </div>
-    <div class="footer-col">
-      <h5>Site</h5>
-      <a href="about.html">About</a>
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="faq.html">FAQ</a>
-    </div>
+    <div class="footer-col"><h5>Test</h5><a href="play.html">Play Now</a><a href="progress.html">My Progress</a></div>
+    <div class="footer-col"><h5>Learn</h5><a href="learn.html">Improve WPM</a><a href="learn.html#hand-guide">Hand Guide</a></div>
+    <div class="footer-col"><h5>Site</h5><a href="about.html">About</a><a href="contact.html">Contact</a><a href="faq.html">FAQ</a><a href="privacy.html">Privacy</a></div>
   </div>
 </footer>
-<div class="footer-bottom">
-  <p>© 2025 TyperTester. Built with passion for fast typists.</p>
-  <p>Free to use forever.</p>
-</div>
-
+<div class="footer-bottom"><p>© 2025 TyperTester. Free to use forever.</p><p>Contact: typertesterweb@gmail.com</p></div>
 </body>
 </html>
